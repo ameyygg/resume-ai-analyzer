@@ -1,0 +1,46 @@
+
+:root {
+  --accent: #d4ff3f;
+}
+
+html, body {
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  background: #101010;
+  position: relative;
+  overflow-x: hidden;
+  color: #f3f3f3;
+}
+
+/* Subtle checkerboard grid background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: -10;
+  background-color: #101010;
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 24px, transparent 24px, transparent 48px),
+    repeating-linear-gradient(rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 24px, transparent 24px, transparent 48px);
+  background-size: 48px 48px, 48px 48px, 48px 48px, 48px 48px;
+  background-position: 0 0, 0 0, 0 0, 24px 24px;
+}
+
+/* IMPORTANT: Remove any bg-background, bg-black, or similar background classes from your main layout/component wrappers. */
+
+/* Accent button style example (optional, for reference) */
+.button-accent {
+  background: var(--accent);
+  color: #181818;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  transition: background 0.2s;
+}
+.button-accent:hover {
+  background: #eaff7f;
+} 
