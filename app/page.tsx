@@ -17,6 +17,17 @@ function stripMarkdown(text: string): string {
     .trim();
 }
 
+// Define the expected analysis structure
+interface Analysis {
+  summary?: string;
+  keySkills?: string[];
+  missingSkills?: string[];
+  formatting?: string;
+  mistakes?: string[];
+  suggestions?: string[];
+  raw?: string;
+}
+
 export default function Home() {
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
@@ -44,7 +55,7 @@ export default function Home() {
     "Other"
   ];
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   // Removed unused variable: analysisData
@@ -199,10 +210,11 @@ export default function Home() {
                     role: selectedRole,
                   }),
                 });
-                const data: { success: boolean; analysis?: any; error?: string } = await res.json();
-                if (data.success) {
+                const data: { success: boolean; analysis?: Analysis; error?: string } = await res.json();
+                if (data.success && data.analysis) {
                   setAnalysis(data.analysis);
                 } else {
+                  setAnalysis(null);
                   setAnalysisError(data.error || "AI analysis failed.");
                 }
               } catch {
@@ -253,24 +265,24 @@ export default function Home() {
               {/* Missing Skills Card */}
               <div className="rounded-2xl bg-background/90 border border-border shadow-lg p-8 flex flex-col gap-2">
                 <div className="flex items-center gap-3 mb-2">
-                  <AlertCircle className="w-6 h-6 text-yellow-400" />
-                  <h3 className="text-2xl font-bold">Missing Important Skills</h3>
+                  <AlertCircle className="w-6 h-6 text-red-400" />
+                  <h3 className="text-2xl font-bold">Missing Skills</h3>
                 </div>
-                {renderAnalysisField(analysis.missingSkills, 'mistakes')}
+                {renderAnalysisField(analysis.missingSkills, 'missingSkills')}
               </div>
-              {/* Formatting/Structure Improvements Card */}
+              {/* Formatting Card */}
               <div className="rounded-2xl bg-background/90 border border-border shadow-lg p-8 flex flex-col gap-2">
                 <div className="flex items-center gap-3 mb-2">
-                  <FileUp className="w-6 h-6 text-primary" />
-                  <h3 className="text-2xl font-bold">Formatting & Structure Improvements</h3>
+                  <UploadCloud className="w-6 h-6 text-primary" />
+                  <h3 className="text-2xl font-bold">Formatting</h3>
                 </div>
-                {renderAnalysisField(analysis.formatting)}
+                {renderAnalysisField(analysis.formatting, 'formatting')}
               </div>
               {/* Mistakes Card */}
               <div className="rounded-2xl bg-background/90 border border-border shadow-lg p-8 flex flex-col gap-2">
                 <div className="flex items-center gap-3 mb-2">
                   <AlertCircle className="w-6 h-6 text-red-400" />
-                  <h3 className="text-2xl font-bold">Overall Mistakes</h3>
+                  <h3 className="text-2xl font-bold">Mistakes</h3>
                 </div>
                 {renderAnalysisField(analysis.mistakes, 'mistakes')}
               </div>
@@ -278,11 +290,12 @@ export default function Home() {
               <div className="rounded-2xl bg-background/90 border border-border shadow-lg p-8 flex flex-col gap-2">
                 <div className="flex items-center gap-3 mb-2">
                   <Sparkles className="w-6 h-6 text-primary" />
-                  <h3 className="text-2xl font-bold">Suggestions to Make Resume Stronger</h3>
+                  <h3 className="text-2xl font-bold">Suggestions</h3>
                 </div>
                 {renderAnalysisField(analysis.suggestions, 'suggestions')}
               </div>
-              {analysis && analysis.raw && (
+              {/* Raw Output (Debug) */}
+              {analysis.raw && (
                 <div className="rounded-xl bg-background/80 border border-yellow-500 shadow p-6 flex flex-col">
                   <h3 className="text-lg font-semibold mb-2">Raw AI Output (Debug)</h3>
                   <pre className="text-xs text-yellow-300 whitespace-pre-wrap break-all">{analysis.raw}</pre>

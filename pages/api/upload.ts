@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { IncomingForm, Fields, Files } from 'formidable';
+import type { Fields, Files, Part } from 'formidable';
+import { IncomingForm as IncomingFormClass } from 'formidable';
 import fs from 'fs';
 import path from 'path';
 
@@ -18,17 +19,17 @@ async function saveFile(req: NextApiRequest): Promise<{ fields: Fields; files: F
   }
 
   return new Promise((resolve, reject) => {
-    const form = new IncomingForm({
+    const form = new IncomingFormClass({
       multiples: false,
       uploadDir: uploadsDir,
       keepExtensions: true,
-      filename: (name: string, ext: string, part: any) => {
+      filename: (name: string, ext: string, part: Part) => {
         const timestamp = Date.now();
         const original = part.originalFilename || 'file';
         return `${timestamp}-${original}`;
       },
     });
-    form.parse(req, (err: any, fields: Fields, files: Files) => {
+    form.parse(req, (err: Error | null, fields: Fields, files: Files) => {
       if (err) return reject(err);
       resolve({ fields, files });
     });
@@ -44,17 +45,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { files } = await saveFile(req);
     const fileKey = Object.keys(files)[0];
-    const file = Array.isArray(files[fileKey]) ? files[fileKey][0] : files[fileKey];
+    const fileCandidate = files[fileKey];
+    const file = Array.isArray(fileCandidate)
+      ? fileCandidate[0]
+      : fileCandidate;
+    if (!file || typeof file.filepath !== 'string') {
+      res.status(400).json({ success: false, error: 'File upload failed.' });
+      return;
+    }
     console.log('File uploaded:', file?.originalFilename, file?.filepath);
     res.status(200).json({
       success: true,
       file: {
         name: file?.originalFilename,
-        path: file ? `/uploads/${path.basename(file.filepath)}` : null,
+        path: `/uploads/${path.basename(file.filepath)}`,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Upload error:', error);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
   }
 } 

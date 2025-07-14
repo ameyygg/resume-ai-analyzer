@@ -79,7 +79,7 @@ Respond ONLY with valid JSON inside triple backticks, with keys: summary, keySki
       console.log('Failed to parse JSON, using raw text.');
     }
     res.status(200).json({ success: true, analysis });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
   }
 } 
