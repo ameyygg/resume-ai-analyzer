@@ -2,6 +2,9 @@
 
 An AI-powered web application that analyzes resumes and provides insights, feedback, and recommendations to help users improve their CVs. Built with Next.js, TypeScript, and modern web technologies.
 
+## Link
+https://resumindd.netlify.app/ (uses google gemini)
+
 ## Features
 - Upload PDF resumes securely
 - AI-driven resume analysis and feedback
