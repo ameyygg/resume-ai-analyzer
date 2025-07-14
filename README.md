@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resume AI Analyzer
+
+An AI-powered web application that analyzes resumes and provides insights, feedback, and recommendations to help users improve their CVs. Built with Next.js, TypeScript, and modern web technologies.
+
+## Features
+- Upload PDF resumes securely
+- AI-driven resume analysis and feedback
+- Clean, modern UI with dark mode
+- Fast, serverless backend (Next.js API routes)
+- Supports multiple resume uploads
+
+## Tech Stack
+- **Frontend:** Next.js (App Router), React, TypeScript, Inter font, Lucide icons
+- **Backend:** Next.js API routes
+- **Styling:** CSS (dark theme)
+- **Other:** Vercel (recommended deployment)
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ameyygg/resume-ai-analyzer.git
+   cd resume-ai-analyzer
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+3. **Run the development server:**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Folder Structure
+```
+resume-ai-analyzer/
+  app/           # Next.js app directory (pages, layout, styles)
+  lib/           # Utility functions
+  pages/api/     # API routes for upload, analysis, etc.
+  public/        # Static files (SVGs, uploads)
+  ...
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
+- Upload your resume as a PDF.
+- The AI will analyze your resume and provide feedback.
+- Download or view suggestions to improve your CV.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
+Contributions are welcome! Please open issues or pull requests for improvements or bug fixes.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
+[MIT](LICENSE)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contact
+Created by [ameyygg](https://github.com/ameyygg). For questions, open an issue or contact via GitHub.

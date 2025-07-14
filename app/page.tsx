@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import React, { useRef, useState } from "react";
-import { Sparkles, FileUp, BrainCog, UploadCloud, BotMessageSquare, CheckCircle, AlertCircle } from "lucide-react";
+import { Sparkles, FileUp, BrainCog, UploadCloud, CheckCircle, AlertCircle } from "lucide-react";
 
 // Utility to strip markdown formatting from a string
 function stripMarkdown(text: string): string {
@@ -48,15 +47,7 @@ export default function Home() {
   const [analysis, setAnalysis] = useState<any>(null);
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
-  // Placeholder data for demonstration
-  const analysisData = {
-    summary: "This is a summary of your resume. It highlights your experience and strengths.",
-    keySkills: ["JavaScript", "React", "Node.js", "TypeScript"],
-    missingSkills: ["GraphQL", "Docker", "CI/CD"],
-    formatting: "Consider using consistent font sizes and adding more whitespace for readability.",
-    mistakes: "There are some grammatical errors in the Experience section and inconsistent date formats.",
-    suggestions: "Add more quantifiable achievements and tailor your resume for the selected role.",
-  };
+  // Removed unused variable: analysisData
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUploadSuccess(null);
@@ -71,7 +62,7 @@ export default function Home() {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
+      const data: { success: boolean; file?: { name?: string; path?: string }; error?: string } = await res.json();
       if (data.success) {
         setUploadSuccess("Resume uploaded successfully!");
         setUploadedFileName(data.file?.name || null);
@@ -81,7 +72,7 @@ export default function Home() {
         setUploadedFileName(null);
         setUploadedFilePath(null);
       }
-    } catch (err: any) {
+    } catch {
       setUploadError("Upload failed. Please try again.");
     } finally {
       setUploading(false);
@@ -90,7 +81,7 @@ export default function Home() {
   };
 
   // Helper to render analysis field (string, array of strings, or array of objects)
-  function renderAnalysisField(field: any, type?: string): React.ReactNode {
+  function renderAnalysisField(field: unknown, type?: string): React.ReactNode {
     if (field === undefined || field === null) return <span className="text-muted-foreground italic">No data</span>;
     if (typeof field === 'string') return <span className="text-muted-foreground text-base leading-relaxed">{stripMarkdown(field)}</span>;
     if (Array.isArray(field)) {
@@ -113,7 +104,7 @@ export default function Home() {
       if (typeof field[0] === 'object') {
         return (
           <ul className="space-y-2 mt-2">
-            {field.map((obj: any, idx: number) => (
+            {field.map((obj: Record<string, unknown>, idx: number) => (
               <li key={idx} className="flex items-start gap-2 text-base text-foreground">
                 <CheckCircle className="text-primary mt-1 w-5 h-5" style={{minWidth: '20px', minHeight: '20px'}} />
                 <span>{Object.entries(obj).map(([k, v]) => <span key={k}>{stripMarkdown(`${k}: ${v}`)} </span>)}</span>
@@ -123,22 +114,7 @@ export default function Home() {
         );
       }
     }
-    if (typeof field === 'object' && field !== null && !Array.isArray(field)) {
-      return (
-        <ul className="space-y-2 mt-2">
-          {Object.entries(field).map(([k, v]) => (
-            <li key={k} className="flex items-start gap-2 text-base text-foreground">
-              <CheckCircle className="text-primary mt-1 w-5 h-5" style={{minWidth: '20px', minHeight: '20px'}} />
-              <span>{stripMarkdown(`${k}: ${v}`)}</span>
-            </li>
-          ))}
-        </ul>
-      );
-    }
-    if (typeof field === 'string' || typeof field === 'number' || typeof field === 'boolean') {
-      return <span className="text-muted-foreground text-base leading-relaxed">{stripMarkdown(String(field))}</span>;
-    }
-    return <span className="text-muted-foreground italic">Invalid data</span>;
+    return <span className="text-muted-foreground italic">No data</span>;
   }
 
   return (
@@ -223,13 +199,13 @@ export default function Home() {
                     role: selectedRole,
                   }),
                 });
-                const data = await res.json();
+                const data: { success: boolean; analysis?: any; error?: string } = await res.json();
                 if (data.success) {
                   setAnalysis(data.analysis);
                 } else {
                   setAnalysisError(data.error || "AI analysis failed.");
                 }
-              } catch (err: any) {
+              } catch {
                 setAnalysisError("AI analysis failed. Please try again.");
               } finally {
                 setAnalysisLoading(false);
